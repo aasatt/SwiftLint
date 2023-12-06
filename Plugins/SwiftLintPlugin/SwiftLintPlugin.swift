@@ -4,6 +4,11 @@ import PackagePlugin
 @main
 struct SwiftLintPlugin: BuildToolPlugin {
     func createBuildCommands(context: PluginContext, target: Target) async throws -> [Command] {
+        guard ProcessInfo.processInfo.environment["XCODE_RUNNING_FOR_PREVIEWS"] == "1" else {
+            // Don't lint anything when running in for Xcode previews
+            return []
+        }
+
         guard let sourceTarget = target as? SourceModuleTarget else {
             return []
         }
